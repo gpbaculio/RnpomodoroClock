@@ -107,17 +107,7 @@ export const pomodoroReducer = (
       };
     }
     case ON_RESET: {
-      const newTotalSeconds = getSeconds(minutes, seconds);
-      return {
-        ...state,
-        ...pomodoroInitState,
-        startTimer: 0,
-        session: 'Work',
-        start: false,
-        percent: new Animated.Value(0),
-        time: secondsToHms(newTotalSeconds),
-        totalSeconds: newTotalSeconds,
-      };
+      return pomodoroInitState;
     }
     default:
       return state;
