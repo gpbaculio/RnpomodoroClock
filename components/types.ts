@@ -5,6 +5,7 @@ export const ON_PAUSE = 'ON_PAUSE';
 export const ON_TIMER_START = 'ON_TIMER_START';
 export const SET_TIMER = 'SET_TIMER';
 export const SWITCH_SESSION = 'SWITCH_SESSION';
+export const ON_SET_TIME = 'ON_SET_TIME';
 
 export interface TimeType {
   minutes: string;
@@ -12,14 +13,21 @@ export interface TimeType {
 }
 
 export interface PomodoroInitStateType {
-  [key: string]: string | number | Animated.Value | boolean | TimeType;
-  work: TimeType;
-  break: TimeType;
-  session: 'Work';
-  timeRemaining: 0; // seconds
+  [key: string]:
+    | string
+    | number
+    | Animated.Value
+    | boolean
+    | TimeType
+    | 'Break'
+    | 'Work';
+  workTime: TimeType;
+  breakTime: TimeType;
+  session: 'Break' | 'Work';
+  timeRemaining: number;
   start: boolean;
   time: string;
-  startTimer: 0;
+  startTimer: number;
   pause: boolean;
   totalSeconds: number;
   percent: Animated.Value;
@@ -27,7 +35,7 @@ export interface PomodoroInitStateType {
 
 export interface SetTimerType {
   type: typeof SET_TIMER;
-  payload: {
+  payload?: {
     startTimer: number;
   };
 }
@@ -42,7 +50,7 @@ export interface OnTimerStartType {
 
 export interface SwitchSessionType {
   type: typeof SWITCH_SESSION;
-  payload: {
+  payload?: {
     session: 'Break' | 'Work';
   };
 }
@@ -51,9 +59,19 @@ export interface OnPauseType {
   type: typeof ON_PAUSE;
 }
 
+export interface OnSetTimeType {
+  type: typeof ON_SET_TIME;
+  payload: {
+    time: 'breakTime' | 'workTime';
+    key: 'minutes' | 'seconds';
+    value: string;
+  };
+}
+
 export type PomodoroActionTypes =
   | OnPauseType
   | SetTimerType
   | OnPlayType
   | OnTimerStartType
+  | OnSetTimeType
   | SwitchSessionType;

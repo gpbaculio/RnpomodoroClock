@@ -11,8 +11,9 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     borderColor: 'gray',
     borderWidth: 1,
-    height: 20,
+    height: 37.5,
     width: 30,
+    fontSize: 14,
   },
   secsContainer: {
     flexDirection: 'row',
@@ -22,8 +23,9 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
     borderColor: 'gray',
     borderWidth: 1,
-    height: 20,
+    height: 37.5,
     width: 30,
+    fontSize: 14,
   },
   controlsContainer: {
     width: width * 0.8,
@@ -36,6 +38,10 @@ export const styles = StyleSheet.create({
     width: width * 0.8,
     justifyContent: 'space-around',
     marginTop: 20,
+    alignItems: 'center',
+  },
+  timeTitle: {
+    fontSize: 18,
   },
   controls: {
     flexDirection: 'row',

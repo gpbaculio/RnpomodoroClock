@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useReducer} from 'react';
 import {
   Text,
   View,
@@ -8,27 +8,31 @@ import {
   TextInput,
 } from 'react-native';
 import {styles, width} from './constants';
-import {useSelector, useDispatch} from 'react-redux';
-import {RootState} from '../store';
 import {
   onTimerStart,
   setTimer,
   onPlay,
   switchSession,
   onPause,
-} from '../store/pomodoro/actions';
+  onSetTime,
+} from './actions';
+import pomodoroReducer, {pomodoroInitState} from './reducers';
 
 const Pomodoro = () => {
-  const dispatch = useDispatch();
-  const {
-    percent,
-    totalSeconds,
-    pause,
-    start,
-    startTimer,
-    time,
-    session,
-  } = useSelector(({pomodoro}: RootState) => pomodoro);
+  const [
+    {
+      percent,
+      totalSeconds,
+      pause,
+      start,
+      startTimer,
+      time,
+      session,
+      workTime,
+      breakTime,
+    },
+    dispatch,
+  ] = useReducer(pomodoroReducer, pomodoroInitState);
 
   const renderBtnTitle = () => {
     if (pause) {
@@ -85,6 +89,7 @@ const Pomodoro = () => {
       dispatch(onPause());
     }
   };
+
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.progressContainer}>
@@ -106,14 +111,17 @@ const Pomodoro = () => {
           />
         </View>
         <View style={styles.timeContainer}>
-          <Text>Work Time</Text>
+          <Text style={styles.timeTitle}>Work Time</Text>
           <View style={styles.minsContainer}>
             <Text>Mins:</Text>
             <TextInput
               keyboardType="numeric"
               style={styles.minsInput}
-              onChangeText={() => console.log('asd')}
-              value={'asd'}
+              onChangeText={mins => {
+                clearInterval(startTimer);
+                dispatch(onSetTime('workTime', 'minutes', mins));
+              }}
+              value={workTime.minutes}
             />
           </View>
           <View style={styles.secsContainer}>
@@ -121,20 +129,26 @@ const Pomodoro = () => {
             <TextInput
               keyboardType="numeric"
               style={styles.secsInput}
-              onChangeText={() => console.log('asd')}
-              value={'asd'}
+              onChangeText={secs => {
+                clearInterval(startTimer);
+                dispatch(onSetTime('workTime', 'seconds', secs));
+              }}
+              value={workTime.seconds}
             />
           </View>
         </View>
         <View style={styles.timeContainer}>
-          <Text>Break Time</Text>
+          <Text style={styles.timeTitle}>Break Time</Text>
           <View style={styles.minsContainer}>
             <Text>Mins:</Text>
             <TextInput
               keyboardType="numeric"
               style={styles.minsInput}
-              onChangeText={() => console.log('asd')}
-              value={'asd'}
+              onChangeText={mins => {
+                clearInterval(startTimer);
+                dispatch(onSetTime('breakTime', 'minutes', mins));
+              }}
+              value={breakTime.minutes}
             />
           </View>
           <View style={styles.secsContainer}>
@@ -142,8 +156,11 @@ const Pomodoro = () => {
             <TextInput
               keyboardType="numeric"
               style={styles.secsInput}
-              onChangeText={() => console.log('asd')}
-              value={'asd'}
+              onChangeText={secs => {
+                clearInterval(startTimer);
+                dispatch(onSetTime('breakTime', 'seconds', secs));
+              }}
+              value={breakTime.seconds}
             />
           </View>
         </View>

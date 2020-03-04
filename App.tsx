@@ -9,15 +9,9 @@
  */
 
 import React from 'react';
-import {Provider} from 'react-redux';
-import {store} from './store';
 
 declare var global: {HermesInternal: null | {}};
 
 import Pomodoro from './components/Pomodoro';
 
-export default () => (
-  <Provider store={store}>
-    <Pomodoro />
-  </Provider>
-);
+export default () => <Pomodoro />;

@@ -5,11 +5,11 @@ import {
   ON_PLAY,
   ON_TIMER_START,
   SET_TIMER,
-  PomodoroActionTypes,
   SWITCH_SESSION,
   PomodoroInitStateType,
-  TimeType,
   ON_PAUSE,
+  PomodoroActionTypes,
+  ON_SET_TIME,
 } from './types';
 
 const minutes = '00';
@@ -17,12 +17,12 @@ const seconds = '05';
 const totalSeconds = getSeconds(minutes, seconds);
 const time = secondsToHms(totalSeconds);
 
-const pomodoroInitState: PomodoroInitStateType = {
-  work: {
+export const pomodoroInitState: PomodoroInitStateType = {
+  workTime: {
     minutes,
     seconds,
   },
-  break: {
+  breakTime: {
     minutes,
     seconds,
   },
@@ -37,7 +37,7 @@ const pomodoroInitState: PomodoroInitStateType = {
 };
 
 export const pomodoroReducer = (
-  state = pomodoroInitState,
+  state: PomodoroInitStateType,
   action: PomodoroActionTypes,
 ) => {
   switch (action.type) {
@@ -46,7 +46,7 @@ export const pomodoroReducer = (
         ...state,
         pause: true,
         start: false,
-        startTimer: null,
+        startTimer: 0,
       };
     case ON_PLAY:
       return {
@@ -61,26 +61,50 @@ export const pomodoroReducer = (
         time: secondsToHms(state.totalSeconds - 1),
         totalSeconds: state.totalSeconds - 1,
       };
-    case SET_TIMER:
+    case SET_TIMER: {
       return {
         ...state,
-        startTimer: action.payload.startTimer,
+        startTimer: action.payload!.startTimer,
       };
-    case SWITCH_SESSION:
-      const {session} = action.payload;
-      const {minutes: sessionMinutes, seconds: sessionSeconds} = state[
-        (session as typeof session).toLowerCase()
-      ] as TimeType;
+    }
+    case SWITCH_SESSION: {
+      const session = action.payload!.session;
+      const {minutes: sessionMinutes, seconds: sessionSeconds} =
+        session === 'Break' ? state.breakTime : state.workTime;
       const sessionTotalSeconds = getSeconds(sessionMinutes, sessionSeconds);
       return {
         ...state,
-        startTimer: null,
+        startTimer: 0,
         session,
         start: false,
         percent: new Animated.Value(0),
         time: secondsToHms(sessionTotalSeconds),
-        totalSeconds,
+        totalSeconds: sessionTotalSeconds,
       };
+    }
+    case ON_SET_TIME: {
+      const {time: timeKey, key, value} = action.payload;
+      const sessionTime = {
+        ...state[timeKey],
+        [key]: value,
+      };
+      const sessionTotalSeconds = getSeconds(
+        sessionTime.minutes,
+        sessionTime.seconds,
+      );
+      return {
+        ...state,
+        [timeKey]: sessionTime,
+        startTimer: 0,
+        start: false,
+        pause: false,
+        percent: new Animated.Value(0),
+        ...(timeKey.includes(state.session.toLowerCase()) && {
+          time: secondsToHms(sessionTotalSeconds),
+          totalSeconds: sessionTotalSeconds,
+        }),
+      };
+    }
     default:
       return state;
   }
