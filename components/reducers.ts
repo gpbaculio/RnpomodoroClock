@@ -10,6 +10,7 @@ import {
   ON_PAUSE,
   PomodoroActionTypes,
   ON_SET_TIME,
+  ON_RESET,
 } from './types';
 
 const minutes = '00';
@@ -103,6 +104,19 @@ export const pomodoroReducer = (
           time: secondsToHms(sessionTotalSeconds),
           totalSeconds: sessionTotalSeconds,
         }),
+      };
+    }
+    case ON_RESET: {
+      const newTotalSeconds = getSeconds(minutes, seconds);
+      return {
+        ...state,
+        ...pomodoroInitState,
+        startTimer: 0,
+        session: 'Work',
+        start: false,
+        percent: new Animated.Value(0),
+        time: secondsToHms(newTotalSeconds),
+        totalSeconds: newTotalSeconds,
       };
     }
     default:

@@ -11,6 +11,8 @@ import {
   OnPauseType,
   ON_SET_TIME,
   OnSetTimeType,
+  OnResetType,
+  ON_RESET,
 } from './types';
 
 export const setTimer: (startTimer: number) => SetTimerType = (
@@ -54,4 +56,8 @@ export const onSetTime: (
 ) => ({
   type: ON_SET_TIME,
   payload: {time, key, value},
+});
+
+export const onReset: () => OnResetType = () => ({
+  type: ON_RESET,
 });

@@ -15,6 +15,7 @@ import {
   switchSession,
   onPause,
   onSetTime,
+  onReset,
 } from './actions';
 import pomodoroReducer, {pomodoroInitState} from './reducers';
 
@@ -106,7 +107,11 @@ const Pomodoro = () => {
           />
           <Button
             title="Reset"
-            onPress={() => console.log('asd')}
+            onPress={() => {
+              animation.stop();
+              clearInterval(startTimer);
+              dispatch(onReset());
+            }}
             color="#841584"
           />
         </View>

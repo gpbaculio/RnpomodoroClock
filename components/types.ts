@@ -6,6 +6,7 @@ export const ON_TIMER_START = 'ON_TIMER_START';
 export const SET_TIMER = 'SET_TIMER';
 export const SWITCH_SESSION = 'SWITCH_SESSION';
 export const ON_SET_TIME = 'ON_SET_TIME';
+export const ON_RESET = 'ON_RESET';
 
 export interface TimeType {
   minutes: string;
@@ -68,7 +69,12 @@ export interface OnSetTimeType {
   };
 }
 
+export interface OnResetType {
+  type: typeof ON_RESET;
+}
+
 export type PomodoroActionTypes =
+  | OnResetType
   | OnPauseType
   | SetTimerType
   | OnPlayType
